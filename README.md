@@ -73,12 +73,151 @@ mern-testing/
 
 Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
 
-1. Complete all required tests (unit, integration, and end-to-end)
-2. Achieve at least 70% code coverage for unit tests
-3. Document your testing strategy in the README.md
-4. Include screenshots of your test coverage reports
-5. Demonstrate debugging techniques in your code
+1. Complete all required tests (unit, integration, and end-to-end)                                                                                                      Client (React Front-end)
+Unit tests:
 
+Which components should be covered?
+E.g.:
+
+A form input (with validation logic)?
+
+A reusable Button or Navbar?
+
+A custom hook (e.g. useApi, useFormState)?
+
+Integration tests:
+
+Are there component interactions or flows you'd like covered?
+E.g.:
+
+Form submission triggers API call and updates UI.
+
+Parent-child component data passing and state updates.
+
+2. Server (Express + Mongoose Back-end)
+Unit tests:
+
+Which controllers or utilities?
+
+E.g. user registration controller, authentication middleware, data validation logic.
+
+Integration tests:
+
+Which routes and model interactions?
+
+E.g. /api/users, /api/posts: test request to route → controller → mock DB → response.
+
+Do you want to mock the database (e.g. using mongodb-memory-server) or use a test MongoDB instance?
+
+3. End-to-End (Cypress)
+Are there specific user flows to automate?
+
+Common scenarios:
+
+Sign up / log in → create data (e.g. a “post”) → view or edit it.
+
+Form submission and UI feedback.
+
+Do you have login credentials or test accounts beforehand? Any seed data?
+
+                
+2. Achieve at least 70% code coverage for unit tests                                                                                                                     module.exports = {
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    'client/src/**/*.{js,jsx}',
+    'server/src/**/*.{js,ts}',
+    '!**/node_modules/**',
+    '!**/tests/**',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+   import { render, screen, fireEvent } from '@testing-library/react';
+import Button from '../../components/Button';
+
+describe('Button component', () => {
+  test('renders button text', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+
+  test('calls onClick handler when clicked', () => {
+    const onClick = jest.fn();
+    render(<Button onClick={onClick}>Click</Button>);
+    fireEvent.click(screen.getByText('Click'));
+    expect(onClick).toHaveBeenCalledTimes(1);               
+4. Document your testing strategy in the README.md                                                                                                                      Testing Strategy
+
+This project follows a comprehensive testing strategy to ensure code quality and reliability across the full MERN stack. The testing approach covers **unit tests**, **integration tests**, and **end-to-end (E2E) tests**.
+
+---
+
+## 1. Unit Tests
+
+### Purpose
+Unit tests focus on testing individual components, functions, or modules in isolation to verify their correctness. This includes:
+
+- React components and hooks (client)
+- Express controllers, middleware, and utility functions (server)
+
+### Tools
+- **Jest**: Test runner and assertion library.
+- **React Testing Library**: For testing React components.
+- **Jest Mocks**: To mock dependencies such as Mongoose models on the server.
+
+### Location
+- Client unit tests: `client/src/tests/unit/`
+- Server unit tests: `server/tests/unit/`
+
+### Coverage
+We aim to maintain at least **70% code coverage** for unit tests to ensure critical parts of the codebase are well-tested.
+
+### Running Tests
+```bash
+npm run test:unit
+5. Include screenshots of your test coverage reports                                                                                                                     Test Coverage Reports
+
+Here are screenshots showing our current test coverage status.
+
+### Coverage Summary
+
+![Coverage Summary](docs/images/coverage-summary.png)
+
+### Component Coverage Example
+
+![Component Coverage](docs/images/component-coverage.png)            
+6. Demonstrate debugging techniques in your code
+import React, { useEffect, useState } from 'react';
+
+export default function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    console.log('UserProfile mounted for userId:', userId);  // Debug start of effect
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Fetched user data:', data);  // Debug fetched data
+        setUser(data);
+      })
+      .catch((err) => {
+        console.error('Error fetching user:', err);  // Debug fetch error
+      });
+  }, [userId]);
+
+  if (!user) return <p>Loading...</p>;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      {/* ... */}
+    </div>
+  );
+}
 ## Resources
 
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
